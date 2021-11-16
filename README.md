@@ -28,3 +28,9 @@ To install patch in MSYS2, from the MSYS2 terminal:
 ```sh
 pacman -S patch
 ```
+
+## Advanced example
+
+More advanced projects such as those using FetchContent may need additional techniques. 
+This [example CMakeLists.txt](https://github.com/scivision/mumps/blob/3948131a6b28ad589effd4674a0067b9b3fd871e/src/CMakeLists.txt#L173) 
+shows that we had to rename some files to avoid collisons.
