@@ -29,6 +29,7 @@ To avoid line-ending problems as noted below for Windows, consider creating repo
 *.c text eol=lf
 *.cmake text eol=lf
 *.cpp text eol=lf
+*.h text eol=lf
 *.patch text eol=lf
 ```
 
