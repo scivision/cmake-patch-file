@@ -6,6 +6,9 @@ enable_testing()
 
 # patches "value.h" with "value.h.patch" using GNU Patch
 
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+# avoids failure if dir not exist
+
 add_custom_command(
 OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/value.h
 COMMAND ${CMAKE_COMMAND}

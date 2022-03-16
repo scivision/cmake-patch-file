@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+    paths:
+      - "**.c"
+      - "**.patch"
+      - "**.cmake"
+      - "**/CMakeLists.txt"
+      - ".github/workflows/ci.yml"
+
+jobs:
+
+  base:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: cmake -Bbuild
+
+    - run: cmake --build build --parallel
+
+    - run: ctest --test-dir build -C Debug
+      if: runner.os == 'Windows'
+
+    - run: ctest --test-dir build
+      if: runner.os != 'Windows'
+
+  mingw:
+    needs: base
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: cmake -Bbuild -G "MinGW Makefiles"
+    - run: cmake --build build --parallel
+    - run: ctest --test-dir build
