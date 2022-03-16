@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21...3.22)
+cmake_minimum_required(VERSION 3.14...3.23)
 
 project(demo_patch LANGUAGES C)
 
@@ -23,5 +23,6 @@ ${CMAKE_CURRENT_BINARY_DIR}/include/value.h
 # specify header file so that add_custom_command() is triggered
 target_include_directories(hello PRIVATE include)
 target_include_directories(hello BEFORE PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include)
+# BEFORE to prioritize patched value.h
 
 add_test(NAME include_patch COMMAND hello)
