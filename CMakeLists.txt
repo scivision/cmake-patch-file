@@ -1,4 +1,9 @@
-cmake_minimum_required(VERSION 3.14...3.23)
+cmake_minimum_required(VERSION 3.14...3.30)
+
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  message(FATAL_ERROR "In-source builds are not allowed.
+  cmake -B build")
+endif()
 
 project(demo_patch LANGUAGES C)
 
@@ -29,3 +34,5 @@ target_include_directories(hello BEFORE PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/incl
 # BEFORE to prioritize patched value.h
 
 add_test(NAME include_patch COMMAND hello)
+
+file(GENERATE OUTPUT .gitignore CONTENT "*")

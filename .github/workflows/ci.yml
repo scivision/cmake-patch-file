@@ -1,5 +1,10 @@
 name: ci
 
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 0
+  CTEST_NO_TESTS_ACTION: error
+
 on:
   push:
     paths:
@@ -20,11 +25,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - run: cmake -Bbuild
 
-    - run: cmake --build build --parallel
+    - run: cmake --build build
 
     - run: ctest --test-dir build -C Debug
       if: runner.os == 'Windows'
@@ -36,8 +41,8 @@ jobs:
     needs: base
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - run: cmake -Bbuild -G "MinGW Makefiles"
-    - run: cmake --build build --parallel
+    - run: cmake --build build
     - run: ctest --test-dir build
