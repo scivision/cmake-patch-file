@@ -14,11 +14,20 @@ enable_testing()
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 # avoids failure if dir not exist
 
+# avoids hassle with line endings on Windows that --ignore-whitespace doesn't help
+if(WIN32)
+configure_file(value.h.patch value.h.patch NEWLINE_STYLE CRLF)
+configure_file(include/value.h include/value.h NEWLINE_STYLE CRLF)
+else()
+configure_file(value.h.patch value.h.patch COPYONLY)
+configure_file(include/value.h include/value.h COPYONLY)
+endif()
+
 add_custom_command(
 OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/value.h
 COMMAND ${CMAKE_COMMAND}
-  -Din_file:FILEPATH=${CMAKE_CURRENT_SOURCE_DIR}/include/value.h
-  -Dpatch_file:FILEPATH=${CMAKE_CURRENT_SOURCE_DIR}/value.h.patch
+  -Din_file:FILEPATH=${CMAKE_CURRENT_BINARY_DIR}/include/value.h
+  -Dpatch_file:FILEPATH=${CMAKE_CURRENT_BINARY_DIR}/value.h.patch
   -Dout_file:FILEPATH=${CMAKE_CURRENT_BINARY_DIR}/include/value.h
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PatchFile.cmake
 DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/include/value.h
