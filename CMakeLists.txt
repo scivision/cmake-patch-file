@@ -5,7 +5,7 @@ if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
   cmake -B build")
 endif()
 
-project(demo_patch LANGUAGES C)
+project(demo_patch LANGUAGES CXX)
 
 enable_testing()
 
@@ -24,14 +24,12 @@ COMMAND ${CMAKE_COMMAND}
 DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/include/value.h
 )
 
-add_executable(hello
-hello.c
-${CMAKE_CURRENT_BINARY_DIR}/include/value.h
-)
+add_executable(hello main.cpp ${CMAKE_CURRENT_BINARY_DIR}/include/value.h)
 # specify header file so that add_custom_command() is triggered
 target_include_directories(hello PRIVATE include)
 target_include_directories(hello BEFORE PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include)
 # BEFORE to prioritize patched value.h
+target_compile_features(hello PRIVATE cxx_std_11)
 
 add_test(NAME include_patch COMMAND hello)
 

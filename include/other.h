@@ -1,1 +1,1 @@
-int other=3;
+constexpr int other=3;

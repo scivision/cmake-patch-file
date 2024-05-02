@@ -1,1 +1,1 @@
-int RET=1;
+constexpr int RET=1;

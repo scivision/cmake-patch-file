@@ -38,8 +38,8 @@ jobs:
       if: runner.os != 'Windows'
 
   mingw:
-    needs: base
     runs-on: windows-latest
+
     steps:
     - uses: actions/checkout@v4
 
