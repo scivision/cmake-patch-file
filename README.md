@@ -1,8 +1,8 @@
 # CMake patch file
 
-Use GNU Patch from CMake to patch source/headers/etc.
+Use `git apply` from CMake to patch source/headers/etc. under the build directory, even with untracked files.
 
-This works on Linux, MacOS, Windows, etc. assuming GNU Patch "patch" is installed.
+This works on Linux, MacOS, Windows, etc. assuming Git is installed.
 We have tested this approach with GCC, Clang, oneAPI, MSVC, MinGW, MSYS2, etc.
 
 This is a canonical CMake approach using
@@ -19,10 +19,9 @@ ensure one of the targets is in the same directory as add_custom_command(),
 then use add_dependencies() from the other targets to the target in the patch directory.
 
 We show a non-basic case where we have a header file to patch, showing how to prepend include directories.
-Compilers will prioritize include directories left-to-right.
+Compilers prioritize include directories left-to-right.
 
-On Windows we assume that Git Bash is installed and look there for Patch.
-This is much simpler and more reliable than prior methods of using MSYS2 or WSL.
+`git apply` avoids numerous pitfalls experienced with GNU Patch.
 
 ## Advanced example
 
