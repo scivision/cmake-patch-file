@@ -1,30 +1,32 @@
-# use GNU Patch from any platform
+find_package(Git REQUIRED)
 
-if(WIN32)
-  # prioritize Git Patch on Windows as other Patches may be very old and incompatible.
-  find_package(Git)
-  if(Git_FOUND)
-    get_filename_component(GIT_DIR ${GIT_EXECUTABLE} DIRECTORY)
-    get_filename_component(GIT_DIR ${GIT_DIR} DIRECTORY)
-  endif()
-endif()
+set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDOUT)
 
-find_program(PATCH
-NAMES patch
-HINTS ${GIT_DIR}
-PATH_SUFFIXES usr/bin
-)
+# this is done here so that cmake --build build --clean-first also works
 
-if(NOT PATCH)
-  message(FATAL_ERROR "Did not find GNU Patch")
-endif()
+cmake_path(GET patch FILENAME patch_name)
 
-execute_process(COMMAND ${PATCH} ${in_file} --input=${patch_file} --output=${out_file} --ignore-whitespace
-TIMEOUT 15
-COMMAND_ECHO STDOUT
+configure_file("${in}" "${out}" COPYONLY)
+configure_file(${patch} ${patch_name} COPYONLY)
+
+execute_process(COMMAND ${GIT_EXECUTABLE} apply --ignore-whitespace "${patch_name}"
 RESULT_VARIABLE ret
-)
+ERROR_VARIABLE err
+TIMEOUT 5)
+# if patch already applied - will fail
 
 if(NOT ret EQUAL 0)
-  message(FATAL_ERROR "Failed to apply patch ${patch_file} to ${in_file} with ${PATCH}")
+  execute_process(COMMAND ${GIT_EXECUTABLE} apply --ignore-whitespace --check -R "${patch_name}"
+  RESULT_VARIABLE ret1
+  ERROR_VARIABLE err1
+  TIMEOUT 5)
+  # if succeeds - patch sucessfully applied - conf OK
+
+  if(NOT ret1 EQUAL 0)
+    message(FATAL_ERROR "Patch ${patch} failed to apply:
+    ${ret} ${err}
+    ${ret1} ${err1}"
+    )
+  endif()
+
 endif()

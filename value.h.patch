@@ -1,3 +1,5 @@
+--- a/include/value.h
++++ b/include/value.h
 @@ -1 +1 @@
 -constexpr int RET=1;
 +constexpr int RET=0;
