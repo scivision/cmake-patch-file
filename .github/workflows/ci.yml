@@ -1,10 +1,5 @@
 name: ci
 
-env:
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
-  CTEST_PARALLEL_LEVEL: 0
-  CTEST_NO_TESTS_ACTION: error
-
 on:
   push:
     paths:
@@ -26,62 +21,47 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - &checkout
+      uses: actions/checkout@v6
 
-    - run: cmake -Bbuild
-    - run: cmake --build build
-    - run: ctest --test-dir build -V
+    - &workflow-default
+      run: cmake --workflow default
 
-    - name: verify touch does not fail
-      run: |
-        cmake -E touch main.cpp
-        cmake --build build
-        ctest --test-dir build -V
+    - &touch
+      name: verify touched main.cpp does not fail
+      run: cmake -E touch main.cpp
 
-    - name: verify clean does not fail
-      run: |
-        cmake --build build --clean-first
-        ctest --test-dir build -V
+    - *workflow-default
+
+    - &workflow-clean
+      name: verify clean does not fail
+      run: cmake --workflow clean
 
   msvc:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - *checkout
 
-    - run: cmake -Bbuild
-    - run: cmake --build build
-    - run: ctest --test-dir build -C Debug -V
+    - &msvc
+      run: cmake --workflow msvc
 
-
-    - name: verify touch does not fail
-      run: |
-        cmake -E touch main.cpp
-        cmake --build build
-        ctest --test-dir build -C Debug -V
+    - *touch
+    - *msvc
 
     - name: verify clean does not fail
       run: |
-        cmake --build build --clean-first
-        ctest --test-dir build -C Debug -V
+        cmake --workflow msvc-clean
 
   mingw:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - *checkout
 
-    - run: cmake -Bbuild -G "MinGW Makefiles"
-    - run: cmake --build build
-    - run: ctest --test-dir build -V
+    - *workflow-default
 
-    - name: verify touch does not fail
-      run: |
-        cmake -E touch main.cpp
-        cmake --build build
-        ctest --test-dir build -V
+    - *touch
+    - *workflow-default
 
-    - name: verify clean does not fail
-      run: |
-        cmake --build build --clean-first
-        ctest --test-dir build -V
+    - *workflow-clean

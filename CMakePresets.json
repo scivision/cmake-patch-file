@@ -1,0 +1,62 @@
+{
+  "version": 6,
+
+"configurePresets": [
+{
+  "name": "default",
+  "binaryDir": "build",
+  "generator": "Ninja",
+  "cacheVariables": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_COMPILE_WARNING_AS_ERROR": true,
+    "CMAKE_LINK_WARNING_AS_ERROR": true
+  }
+},
+{
+  "name": "msvc", "inherits": "default",
+  "generator": "Visual Studio 18 2026"
+}
+],
+"buildPresets": [
+  { "name": "default", "configurePreset": "default", "configuration": "Release"},
+  { "name": "clean", "configurePreset": "default", "inherits": "default", "cleanFirst": true },
+  { "name": "msvc", "inherits": "default", "configurePreset": "msvc", "jobs": 4 },
+  { "name": "msvc-clean", "inherits": "default", "configurePreset": "msvc", "cleanFirst": true }
+],
+"testPresets": [
+{
+  "name": "default",
+  "configurePreset": "default",
+  "configuration": "Release",
+  "output": {
+    "outputOnFailure": true,
+    "verbosity": "verbose"
+  },
+  "execution": {
+    "noTestsAction": "error",
+    "scheduleRandom": true,
+    "stopOnFailure": false,
+    "jobs": 4
+  }
+},
+{ "name": "msvc", "inherits": "default", "configurePreset": "msvc" }
+],
+"workflowPresets": [
+  { "name": "default", "displayName": "build and test", "steps": [
+      { "type": "configure", "name": "default" },
+      { "type": "build", "name": "default" },
+      { "type": "test", "name": "default" } ] },
+  { "name": "msvc", "displayName": "MSVC build and test", "steps": [
+      { "type": "configure", "name": "msvc" },
+      { "type": "build", "name": "msvc" },
+      { "type": "test", "name": "msvc" } ] },
+  { "name": "msvc-clean", "displayName": "MSVC clean build and test", "steps": [
+      { "type": "configure", "name": "msvc" },
+      { "type": "build", "name": "msvc-clean" },
+      { "type": "test", "name": "msvc" } ] },
+  { "name": "clean", "displayName": "Clean build and test", "steps": [
+      { "type": "configure", "name": "default" },
+      { "type": "build", "name": "clean" },
+      { "type": "test", "name": "default" } ] }
+]
+}

@@ -26,5 +26,6 @@ Compilers prioritize include directories left-to-right.
 ## Advanced example
 
 More advanced projects such as those using FetchContent may need additional techniques.
-This [example CMakeLists.txt](https://github.com/scivision/mumps/blob/3948131a6b28ad589effd4674a0067b9b3fd871e/src/CMakeLists.txt#L173)
+This
+[example CMakeLists.txt](https://github.com/scivision/mumps/blob/3948131a6b28ad589effd4674a0067b9b3fd871e/src/CMakeLists.txt#L173)
 shows that we had to rename some files to avoid collisions.
